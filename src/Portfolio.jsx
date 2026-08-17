@@ -315,17 +315,35 @@ export default function Portfolio() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const submitForm = (e) => {
+  // Replace this with your own Formspree endpoint (see README for how to get one).
+  const FORMSPREE_ENDPOINT = "https://formspree.io/f/myegnlzk";
+
+  const submitForm = async (e) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.message) return;
     setFormState("sending");
-    setTimeout(() => {
-      setFormState("sent");
-      setTimeout(() => {
-        setFormState("idle");
-        setForm({ name: "", email: "", subject: "", message: "" });
-      }, 2200);
-    }, 900);
+
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: new FormData(e.target),
+      });
+
+      if (res.ok) {
+        setFormState("sent");
+        setTimeout(() => {
+          setFormState("idle");
+          setForm({ name: "", email: "", subject: "", message: "" });
+        }, 2200);
+      } else {
+        setFormState("error");
+        setTimeout(() => setFormState("idle"), 2500);
+      }
+    } catch (err) {
+      setFormState("error");
+      setTimeout(() => setFormState("idle"), 2500);
+    }
   };
 
   const navItems = [
@@ -558,7 +576,7 @@ export default function Portfolio() {
                 onMouseMove={handleMouseMove}
                 className="glow-frame relative w-52 h-52 sm:w-64 sm:h-64 lg:w-72 lg:h-72 rounded-full"
               >
-               {/* <div
+                {/*<div
                   className="relative z-10 w-full h-full rounded-full flex items-center justify-center border backdrop-blur-xl"
                   style={{ background: t.card, borderColor: t.cardBorder }}
                 >
@@ -570,11 +588,13 @@ export default function Portfolio() {
                   </span>
                 </div>*/}
 
-<img 
+                <img 
   src={profilePic} 
   alt="Niruni Prabhasha" 
   className="relative z-10 w-full h-full rounded-full object-cover" 
 />
+
+
 
                 {["React", "SQL", "PHP", "AWS"].map((tag, i) => (
                   <span
@@ -902,6 +922,7 @@ export default function Portfolio() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <input
                   required
+                  name="name"
                   placeholder="Name"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -913,6 +934,7 @@ export default function Portfolio() {
                 <input
                   required
                   type="email"
+                  name="email"
                   placeholder="Email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -923,6 +945,7 @@ export default function Portfolio() {
                 />
               </div>
               <input
+                name="subject"
                 placeholder="Subject"
                 value={form.subject}
                 onChange={(e) => setForm({ ...form, subject: e.target.value })}
@@ -934,6 +957,7 @@ export default function Portfolio() {
               <textarea
                 required
                 rows={5}
+                name="message"
                 placeholder="Message"
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
@@ -948,7 +972,11 @@ export default function Portfolio() {
                 className="w-full sm:w-auto px-8 py-3.5 rounded-xl font-semibold text-sm transition-all"
                 style={{
                   background:
-                    formState === "sent" ? "#34d399" : t.cyan,
+                    formState === "sent"
+                      ? "#34d399"
+                      : formState === "error"
+                      ? "#f87171"
+                      : t.cyan,
                   color: "#04141a",
                   opacity: formState === "sending" ? 0.7 : 1,
                 }}
@@ -956,6 +984,7 @@ export default function Portfolio() {
                 {formState === "idle" && "Send Message"}
                 {formState === "sending" && "Sending..."}
                 {formState === "sent" && "✓ Message Sent"}
+                {formState === "error" && "✕ Something went wrong — try again"}
               </button>
             </form>
           </Reveal>
@@ -979,7 +1008,7 @@ export default function Portfolio() {
             Available for work
           </div>
           <span className="text-xs" style={{ color: t.textDim }}>
-            © 2026 {PROFILE.name} · Built with React &amp; Tailwind
+            © 2026 {PROFILE.name} · {/*Built with React &amp; Tailwind*/}
           </span>
         </div>
       </footer>
