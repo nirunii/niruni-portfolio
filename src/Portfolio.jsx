@@ -71,14 +71,14 @@ const PROJECTS = [
     demo: "",
   },
   {
-    title: "Multi-Theater Management System",
+    title: "Movie-Theater Management System",
     summary:
       "Database-driven movie booking and theater management application.",
     details:
       "A booking platform for managing multiple theaters, showtimes, and seat inventory. Built on Oracle APEX for rapid form-driven administration, paired with PHP for the customer-facing booking flow.",
     tech: ["Oracle APEX", "PHP", "SQL"],
     highlights: [
-      "Multi-theater, multi-showtime seat inventory",
+      "Movie-theater, movie-showtime seat inventory",
       "Oracle APEX admin console for staff",
       "Booking flow with conflict-free seat selection",
     ],
@@ -1008,7 +1008,7 @@ export default function Portfolio() {
             Available for work
           </div>
           <span className="text-xs" style={{ color: t.textDim }}>
-            © 2026 {PROFILE.name} · {/*Built with React &amp; Tailwind*/}
+            © 2026 {PROFILE.name} {/*· Built with React &amp; Tailwind*/}
           </span>
         </div>
       </footer>
